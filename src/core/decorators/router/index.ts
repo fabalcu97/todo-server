@@ -35,7 +35,7 @@ Object.keys(IRouteKeys).forEach((method) => {
     return function (
       target: Router,
       propertyKey: string,
-      descriptor: PropertyDescriptor,
+      descriptor: PropertyDescriptor
     ) {
       if (!target.hasOwnProperty("routes")) {
         target.routes = {};

@@ -1,11 +1,22 @@
 {
   "compilerOptions": {
     "sourceMap": true,
-    "target": "es6",
-    "module": "commonjs",
+    "target": "ES2018",
+    "module": "CommonJS",
+    "esModuleInterop": true,
     "outDir": "./dist",
     "baseUrl": "./src",
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "lib": [
+      "es2018",
+      "esnext.asynciterable"
+    ],
+    "plugins": [
+      {
+        "name": "@divyenduz/ts-graphql-plugin"
+      }
+    ],
     "paths": {
       "@decorators": [
         "core/decorators/index.ts"
@@ -16,6 +27,15 @@
       "@baseClasses": [
         "core/classes/index.ts"
       ],
+      "@db": [
+        "core/db/index.ts"
+      ],
+      "@graphql": [
+        "core/graphql/index.ts"
+      ],
+      "@models": [
+        "server/models/index.ts"
+      ]
     }
   },
   "include": [

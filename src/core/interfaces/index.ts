@@ -3,13 +3,23 @@ import {
   Response,
   NextFunction,
   IRoute,
-  Router as ExpressRouter,
+  Router as IExpressRouter,
   RouterOptions,
-} from "express";
-import * as httpStatus from "http-status-codes";
+} from 'express';
+import * as httpStatus from 'http-status-codes';
+import { MethodsEnum } from './enums';
+import { BaseController, Router } from '../classes';
+import {
+  Connection as IDBConnection,
+  ConnectionOptions as IDatabaseConnectionOptions,
+} from 'typeorm';
+import {
+  ApolloServer as IApolloServer,
+  ApolloServerExpressConfig as IApolloServerExpressConfig,
+} from 'apollo-server-express';
 
 type KeysEnum<T> = { [P in keyof Required<T>]: any };
-export type IRouteType = KeysEnum<Omit<IRoute, "path" | "stack">>;
+export type IRouteType = KeysEnum<Omit<IRoute, 'path' | 'stack'>>;
 
 type IBaseExpressFunction = (
   req: Request,
@@ -20,6 +30,15 @@ type IBaseExpressFunction = (
 type IMiddleWare = IBaseExpressFunction;
 
 type IController = IBaseExpressFunction;
+
+type IServer = {
+  port?: number;
+  databaseConnectionOptions?: IDatabaseConnectionOptions;
+  middleWares?: IMiddleWare[];
+  routers?: Router[];
+  statics?: string[];
+  apolloServerOptions?: IApolloServerExpressConfig;
+};
 
 interface IControllerArgs {
   req: Request;
@@ -34,6 +53,8 @@ interface IRoutes {
   };
 }
 
+type ControllerParams = Parameters<BaseController['mainMethod']>;
+
 export {
   IMiddleWare,
   IController,
@@ -41,8 +62,15 @@ export {
   Response,
   NextFunction,
   IControllerArgs,
+  IServer,
   httpStatus,
+  IDBConnection,
   IRoutes,
-  ExpressRouter,
+  IApolloServer,
+  IApolloServerExpressConfig,
+  IExpressRouter as ExpressRouter,
   RouterOptions,
+  MethodsEnum,
+  IDatabaseConnectionOptions,
+  ControllerParams,
 };

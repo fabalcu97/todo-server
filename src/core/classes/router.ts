@@ -1,10 +1,10 @@
-import { IRoutes, ExpressRouter, RouterOptions } from "@interfaces";
-import { BaseController } from "@baseClasses";
+import { IRoutes, ExpressRouter, RouterOptions } from '@interfaces';
+import { BaseController } from '@baseClasses';
 
 export abstract class Router {
   private mRouter: ExpressRouter;
   private mBaseUrl: string;
-  private controllers: BaseController[];
+  protected controllers: BaseController[];
   public routes: IRoutes;
 
   constructor(baseUrl: string, options?: RouterOptions) {
@@ -14,7 +14,7 @@ export abstract class Router {
 
   public get router(): ExpressRouter {
     this.controllers.forEach((controller: BaseController) => {
-      this.mRouter[controller.method](controller.path, controller.main);
+      this.mRouter[controller.method](controller.path, controller.mainMethod);
     });
     return this.mRouter;
   }
@@ -22,4 +22,7 @@ export abstract class Router {
   public get baseUrl(): string {
     return this.mBaseUrl;
   }
+
+  protected setControllers = (controller) =>
+    Object.keys(controller).map((k) => new controller[k]());
 }

@@ -1,14 +1,28 @@
-import "module-alias/register";
+import 'module-alias/register';
+import 'reflect-metadata';
+console.clear();
 
-import App from "./server/app";
-import { dummyMiddleware } from "./server/middlewares";
-import * as morgan from "morgan";
-import { Router } from "@baseClasses";
+import { Server } from '@baseClasses';
+import middleWares from './server/middleware';
+import routers from './server/routers';
+import { databaseConnectionOptions } from '@db';
 
-const middleWares = [dummyMiddleware, morgan("dev")];
+import graphqlSchema from './server/graphql';
 
-const routers = [new Router("/hello")];
+const app = new Server({
+  port: 8000,
+  databaseConnectionOptions,
+  middleWares,
+  routers,
+  apolloServerOptions: {
+    logger: {
+      debug: (message?: any) => console.debug('message =>', message),
+      info: (message?: any) => console.debug('message =>', message),
+      warn: (message?: any) => console.debug('message =>', message),
+      error: (message?: any) => console.debug('message =>', message),
+    },
+    schema: graphqlSchema,
+  },
+});
 
-const app = new App(8000, middleWares, routers);
-
-app.listen();
+app.startServer();

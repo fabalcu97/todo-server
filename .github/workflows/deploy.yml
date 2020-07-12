@@ -1,4 +1,4 @@
-name: CI
+name: TODO Server Deploy
 
 on:
   push:

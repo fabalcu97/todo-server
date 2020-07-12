@@ -4,6 +4,7 @@
   "description": "ToDo backend application",
   "main": "src/index.js",
   "scripts": {
+    "build": "tsc --removeComments",
     "compile": "tsc && node -r dotenv/config dist/index.js",
     "dev": "nodemon -e ts --exec \"npm run compile\"",
     "typeorm": "ts-node --require module-alias/register ./node_modules/typeorm/cli -f ./src/core/db/options.ts",

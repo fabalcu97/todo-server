@@ -1,0 +1,28 @@
+name: TODO Server Deploy
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.16.2'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Run Database Migrations
+      run: npm run migrate
+      
+    - name: Build code
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: npm run build

@@ -21,9 +21,8 @@ jobs:
 
     - name: Run Database Migrations
       run: npm run migrate
-    
-    - env:
-        DATABASE_URL: psql://todo_user:todo_pass@localhost:5432/todo_db
       
     - name: Build code
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: npm run build

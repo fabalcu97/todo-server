@@ -1,28 +1,39 @@
-name: TODO Server Deploy
+name: Build and deploy
 
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Setup Node
+    - uses: actions/checkout@v1
+
+    - name: Install Node.js
       uses: actions/setup-node@v1
       with:
         node-version: '12.16.2'
 
-    - name: Install Dependencies
+    - name: Install npm dependencies
       run: npm install
 
-    - name: Run Database Migrations
+    - name: Run build task
+      run: npm run build --if-present
+    
+    - name: Run migrations
       run: npm run migrate
-      
-    - name: Build code
+
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@v2.1.1
       env:
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      run: npm run build
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "dist/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}

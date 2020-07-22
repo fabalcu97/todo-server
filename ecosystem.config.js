@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'server',
       script: './dist/index.js',
-      watch: './dist/',
+      watch: false,
     },
   ],
 
@@ -16,7 +16,8 @@ module.exports = {
       repo: 'git@github.com:fabalcu97/todo-server.git',
       path: '/home/fabalcu97/todo-server',
       'pre-deploy-local': 'npm run migrate',
-      'post-deploy': 'npm install && npm run build && pm2 reload ecosystem.config.js --env dev',
+      'post-deploy':
+        'npm install && npm run build && pm2 reload ecosystem.config.js --env dev',
       'pre-setup': '',
     },
   },

@@ -15,5 +15,5 @@ export class Task extends BaseModel {
 
   @Field()
   @Column('text')
-  text: string;
+  description: string;
 }

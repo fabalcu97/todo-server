@@ -8,7 +8,7 @@ const databaseOptions: ConnectionOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
   logging: Boolean(process.env.DATABASE_LOGGING),
-  synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE),
+  synchronize: false,
   entities: [join(base, 'dist/server/models/*.js')],
   migrations: [join(base, 'dist/migrations/*.js')],
   cli: {

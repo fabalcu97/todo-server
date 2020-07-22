@@ -8,7 +8,7 @@ class CreateTaskController extends BaseController {
 
   controllerMethod = async () => {
     const task = new Task();
-    task.text = this.body.text;
+    task.description = this.body.description;
     task.title = this.body.title;
     await task.save();
     this.success(httpStatus.CREATED, task);
@@ -49,7 +49,7 @@ class UpdateTaskController extends BaseController {
     const task = await Task.findOne(id);
     if (task) {
       task.title = this.body.title || task.title;
-      task.text = this.body.text || task.text;
+      task.description = this.body.description || task.description;
       await task.save();
       this.success(httpStatus.OK, task);
     } else {

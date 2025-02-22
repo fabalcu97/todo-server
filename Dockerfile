@@ -29,17 +29,11 @@ ADD . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-editable
 
-# Final stage
-FROM python:3.11-slim AS final
-
-# Install uv
-COPY --from=ghcr.io/astral-sh/uv:0.6.2 /uv /uvx /bin/
-
 # Set work directory
 WORKDIR /app
 
 # Copy virtual environment from builder
-COPY --from=builder /app/.venv /app/.venv
+# COPY --from=builder /app/.venv /app/.venv
 
 # Copy project files
 COPY . /app/

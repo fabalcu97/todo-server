@@ -1,6 +1,9 @@
 # Builder stage
 FROM python:3.11-slim AS builder
 
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential curl
+
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:0.6.2 /uv /uvx /bin/
 

@@ -22,5 +22,5 @@ from todos.urls import router as todoRouter
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/todos", include(todoRouter.urls)),
+    path("api/v1/", include(todoRouter.urls)),
 ]

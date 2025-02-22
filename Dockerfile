@@ -1,45 +1,66 @@
-# Builder stage
+# Stage 1: Builder
 FROM python:3.11-slim AS builder
 
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential curl
-
-# Install uv
-COPY --from=ghcr.io/astral-sh/uv:0.6.2 /uv /uvx /bin/
-
 # Set environment variables
-ENV PYTHONUNBUFFERED=1 \
-    UV_SYSTEM_PYTHON=1 \
-    UV_LINK_MODE=copy \
-    UV_COMPILE_BYTECODE=1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    VIRTUAL_ENV=/opt/venv
 
-# Set work directory
-WORKDIR /app
+# Create and activate virtual environment
+RUN python -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# Install dependencies
-RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-project --no-editable
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the project into the image
-ADD . /app
+# Install pip requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Sync the project
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-editable
+# Stage 2: Development
+FROM python:3.11-slim AS development
 
-# Set work directory
-WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    VIRTUAL_ENV=/opt/venv \
+    PATH="/opt/venv/bin:$PATH"
 
 # Copy virtual environment from builder
-# COPY --from=builder /app/.venv /app/.venv
+COPY --from=builder /opt/venv /opt/venv
 
-# Copy project files
-COPY . /app/
+# Install development dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Expose port
+WORKDIR /app
+COPY . .
+
+# Development server port
 EXPOSE 8000
 
-# Run Django application
-CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:8000", "todo.wsgi:application"]
+# Run development server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# Stage 3: Production
+FROM python:3.11-slim AS production
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    VIRTUAL_ENV=/opt/venv \
+    PATH="/opt/venv/bin:$PATH"
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+
+WORKDIR /app
+COPY . .
+
+# Production server port
+EXPOSE 8000
+
+# Run gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "todo.wsgi:application"]

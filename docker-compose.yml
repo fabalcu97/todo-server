@@ -2,7 +2,10 @@ version: "3.8"
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
     container_name: todo_web
     ports:
       - "8000:8000"

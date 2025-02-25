@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "0.0.0.0",
-    "todo-api.fabalcu97.dev",
+    "todo.fabalcu97.dev",
 ]
 
 # Application definition

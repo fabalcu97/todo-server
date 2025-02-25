@@ -32,6 +32,8 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
+    "localhost",
+    "0.0.0.0",
     "todo-api.fabalcu97.dev",
 ]
 

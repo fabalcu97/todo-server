@@ -19,7 +19,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Stage 2: Development
+# Stage 2: Frontend
+FROM denoland/deno:alpine AS frontend
+
+WORKDIR /app/frontend
+
+# Copy frontend files
+COPY frontend/ ./
+
+# Install dependencies and build the frontend
+# RUN deno run --allow-read --allow-write --allow-env --allow-net --allow-run build --emptyOutDir
+RUN deno run build
+
+# Stage 3: Development
 FROM python:3.11-slim AS development
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -39,13 +51,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 COPY . .
 
+RUN python manage.py collectstatic --noinput
+
 # Development server port
 EXPOSE 8000
 
 # Run development server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-# Stage 3: Production
+# Stage 4: Production
 FROM python:3.11-slim AS production
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -58,6 +72,8 @@ COPY --from=builder /opt/venv /opt/venv
 
 WORKDIR /app
 COPY . .
+
+RUN python manage.py collectstatic --noinput
 
 # Production server port
 EXPOSE 8000

@@ -11,7 +11,10 @@
       "args": ["runserver", "0.0.0.0:8000"],
       "django": true,
       "autoStartBrowser": false,
-      "program": "${workspaceFolder}/manage.py"
+      "justMyCode": false,
+      "python": "${command:python.interpreterPath}",
+      "program": "${workspaceFolder}/manage.py",
+      "console": "integratedTerminal"
     }
   ]
 }

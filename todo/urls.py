@@ -24,6 +24,6 @@ from healthcheck.urls import router as healthRouter
 urlpatterns = [
     path("api/v1/auth/", include("authentication.urls")),
     path("admin/", admin.site.urls),
-    path("api/v1/todo", include(todoRouter.urls)),
+    path("api/v1/todo/", include(todoRouter.urls)),
     path("api/v1/health", include(healthRouter.urls)),
 ]

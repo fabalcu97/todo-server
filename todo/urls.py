@@ -18,10 +18,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from .views import SpaView
 from todos.urls import router as todoRouter
 from healthcheck.urls import router as healthRouter
 
 urlpatterns = [
+    path("", SpaView.as_view(), name="spa"),
+
     path("api/v1/auth/", include("authentication.urls")),
     path("admin/", admin.site.urls),
     path("api/v1/todo/", include(todoRouter.urls)),
